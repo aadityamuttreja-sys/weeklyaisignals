@@ -12,7 +12,6 @@ export const FEEDS: FeedSpec[] = [
   { name: "Import AI", url: "https://importai.substack.com/feed" },
   { name: "The Gradient", url: "https://thegradient.pub/rss/" },
   { name: "Stratechery (free)", url: "https://stratechery.com/feed/" },
-  { name: "Ben's Bites", url: "https://bensbites.beehiiv.com/feed" },
   // Lab feeds vary in availability; add as you confirm them:
   // { name: "Anthropic", url: "https://www.anthropic.com/news/rss.xml" }
   // { name: "OpenAI", url: "https://openai.com/news/rss.xml" }
