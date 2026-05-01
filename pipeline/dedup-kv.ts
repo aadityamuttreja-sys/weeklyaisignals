@@ -26,7 +26,8 @@ export async function markSeen(items: RawItem[]): Promise<void> {
   const r = kv();
   if (!r) return;
   if (!items.length) return;
-  const hashes = items.map(itemHash);
-  await r.sadd(SEEN_KEY, ...hashes);
-  await r.expire(SEEN_KEY, TTL_SECONDS);
+   const hashes = items.map(itemHash);
+   const [first, ...rest] = hashes;
+   await r.sadd(SEEN_KEY, first, ...rest);
+   await r.expire(SEEN_KEY, TTL_SECONDS);
 }
