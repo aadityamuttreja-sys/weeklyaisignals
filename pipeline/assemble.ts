@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { SummarizedItem } from "./types";
+import type { DeepDive } from "./deepdive";
 
 type Buckets = {
   tldr: SummarizedItem[];
@@ -28,6 +29,11 @@ function bucketize(items: SummarizedItem[]): Buckets {
 
 function escapeYaml(s: string): string {
   return s.replace(/"/g, '\\"').replace(/\n/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function yamlMultiline(s: string): string {
+  const lines = s.split(/\n/);
+  return ["|", ...lines.map((l) => `      ${l}`)].join("\n");
 }
 
 function renderItemList(items: SummarizedItem[]): string {
@@ -59,6 +65,7 @@ export function assembleDraft(opts: {
   items: SummarizedItem[];
   issueNumber: number;
   publishDate?: string;
+  deepDive?: DeepDive;
 }): { mdx: string; slug: string; filename: string } {
   const buckets = bucketize(opts.items);
   const publishDate = opts.publishDate ?? isoDate(nextMonday());
@@ -73,20 +80,38 @@ export function assembleDraft(opts: {
   ]) {
     for (const t of item.tags) allTags.add(t);
   }
+  if (opts.deepDive) for (const t of opts.deepDive.tags) allTags.add(t);
   const issueTags = [...allTags].slice(0, 8);
 
   const tldrLines = buckets.tldr.map((i) => `    - "${escapeYaml(i.summary)}"`).join("\n");
 
-  const deep = buckets.deepDive[0];
+  const deep = opts.deepDive ?? null;
+  const deepBucketed = buckets.deepDive[0];
   const deepDiveBlock = deep
     ? [
         `  deepDive:`,
         `    title: "${escapeYaml(deep.title)}"`,
-        `    body: "${escapeYaml(deep.summary)}"`,
-        `    sourceUrl: "${deep.url}"`,
+        `    standfirst: "${escapeYaml(deep.standfirst)}"`,
+        `    body:`,
+        ...deep.body.map((p) => `      - "${escapeYaml(p)}"`),
+        `    pullQuote: "${escapeYaml(deep.pullQuote)}"`,
+        deep.sourceUrl ? `    sourceUrl: "${deep.sourceUrl}"` : "",
         `    tags: [${deep.tags.map((t) => JSON.stringify(t)).join(", ")}]`,
-      ].join("\n")
-    : "  deepDive: null";
+      ]
+        .filter(Boolean)
+        .join("\n")
+    : deepBucketed
+      ? [
+          `  deepDive:`,
+          `    title: "${escapeYaml(deepBucketed.title)}"`,
+          `    standfirst: ""`,
+          `    body:`,
+          `      - "${escapeYaml(deepBucketed.summary)}"`,
+          `    pullQuote: ""`,
+          `    sourceUrl: "${deepBucketed.url}"`,
+          `    tags: [${deepBucketed.tags.map((t) => JSON.stringify(t)).join(", ")}]`,
+        ].join("\n")
+      : "  deepDive: null";
 
   const headline = buckets.tldr[0]?.title ?? buckets.builders[0]?.title ?? "Weekly signals";
   const summaryLine =

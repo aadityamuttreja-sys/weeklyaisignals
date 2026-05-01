@@ -1,0 +1,79 @@
+name: Weekly pipeline
+
+on:
+  schedule:
+    # Monday 06:00 UTC
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+    inputs:
+      auto_merge:
+        description: "Auto-merge the draft PR (skip review)"
+        required: false
+        default: "false"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  curate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      KV_REST_API_URL: ${{ secrets.KV_REST_API_URL }}
+      KV_REST_API_TOKEN: ${{ secrets.KV_REST_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - run: npm ci
+
+      - name: Run curation pipeline
+        id: pipeline
+        run: |
+          npx tsx pipeline/run.ts | tee /tmp/pipeline.log
+          DRAFT_PATH=$(grep -oE 'content/drafts/[^ ]+\.mdx' /tmp/pipeline.log | tail -1)
+          SLUG=$(basename "$DRAFT_PATH" .mdx)
+          echo "draft_path=$DRAFT_PATH" >> "$GITHUB_OUTPUT"
+          echo "slug=$SLUG" >> "$GITHUB_OUTPUT"
+
+      - name: Bail if no draft was produced
+        if: steps.pipeline.outputs.draft_path == ''
+        run: |
+          echo "::error::Pipeline produced no draft."
+          exit 1
+
+      - name: Open draft PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AUTO_MERGE: ${{ github.event.inputs.auto_merge }}
+          DRAFT_PATH: ${{ steps.pipeline.outputs.draft_path }}
+          SLUG: ${{ steps.pipeline.outputs.slug }}
+        run: |
+          set -euo pipefail
+          BRANCH="draft/$SLUG"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git checkout -b "$BRANCH"
+          git add "$DRAFT_PATH"
+          git commit -m "draft: issue $SLUG"
+          git push -u origin "$BRANCH"
+
+          PR_URL=$(gh pr create \
+            --title "Draft: issue $SLUG" \
+            --body "Automated weekly draft. Review the rendered preview, edit the MDX in this PR if needed, then merge to publish. Merging triggers the publish-on-merge workflow which promotes the file from /content/drafts to /content/issues." \
+            --base main \
+            --head "$BRANCH")
+
+          echo "Opened: $PR_URL"
+
+          if [[ "${AUTO_MERGE:-false}" == "true" ]]; then
+            gh pr merge --auto --squash "$PR_URL" || true
+          fi

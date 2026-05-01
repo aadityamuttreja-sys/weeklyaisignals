@@ -1,6 +1,7 @@
 import { getAllIssues } from "@/lib/mdx";
 import { getAllTags } from "@/lib/tags";
 import { ArchiveList } from "./ArchiveList";
+import { Footer } from "@/components/Footer";
 
 export const metadata = {
   title: "Archive",
@@ -14,6 +15,7 @@ export default function ArchivePage() {
     summary: i.summary,
     publishDate: i.publishDate,
     issueNumber: i.issueNumber,
+    readingTimeMinutes: i.readingTimeMinutes ?? 6,
     tags: Array.from(
       new Set([
         ...i.tags,
@@ -26,17 +28,19 @@ export default function ArchivePage() {
   const allTags = getAllTags();
 
   return (
-    <div>
-      <header className="mb-10">
-        <p className="smallcaps mb-3">Archive</p>
-        <h1 className="font-serif text-[32px] font-semibold leading-[1.2] tracking-tight">
+    <main className="mx-auto max-w-[1180px] px-6">
+      <header className="pt-24 pb-12">
+        <div className="smallcaps">Archive</div>
+        <h1 className="mt-3 max-w-[18ch] font-serif text-[clamp(2.4rem,4.6vw,3.6rem)] font-medium leading-[1.05] tracking-tight text-ink-strong">
           Every issue, by week.
         </h1>
-        <p className="mt-4 text-muted">
-          Filter by topic to find what you&apos;re looking for.
+        <p className="mt-6 max-w-[38rem] font-serif text-[1.18rem] leading-[1.5] text-ink-muted">
+          {issues.length} {issues.length === 1 ? "issue" : "issues"} so far.
+          Filter by topic, search by title, or scroll the years.
         </p>
       </header>
-      <ArchiveList issues={issues} allTags={allTags} />
-    </div>
+      <ArchiveList archive={issues} allTags={allTags} />
+      <Footer />
+    </main>
   );
 }

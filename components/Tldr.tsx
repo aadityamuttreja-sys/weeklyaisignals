@@ -1,15 +1,19 @@
-export function Tldr({ bullets }: { bullets: string[] }) {
-  if (!bullets.length) return null;
+export function TldrList({ items }: { items: string[] }) {
   return (
-    <ul className="space-y-4">
-      {bullets.map((b, i) => (
+    <ol className="m-0 list-none p-0">
+      {items.map((it, i) => (
         <li
           key={i}
-          className="border-l border-rule pl-5 text-[18px] leading-[1.65] text-ink"
+          className="grid grid-cols-[36px_1fr] gap-4 border-b border-rule-soft py-4 last:border-b-0"
         >
-          {b}
+          <span className="pt-[0.4em] self-start font-mono text-[0.74rem] tracking-[0.06em] text-ink-faint">
+            {String(i + 1).padStart(2, "0")}
+          </span>
+          <span className="font-serif text-[1.05rem] leading-[1.62] text-ink-strong">
+            {it}
+          </span>
         </li>
       ))}
-    </ul>
+    </ol>
   );
 }

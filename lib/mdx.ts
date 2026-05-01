@@ -14,6 +14,20 @@ const ItemSchema = z.object({
 const SectionKey = z.enum(["tldr", "builders", "deepDive", "everythingElse"]);
 export type SectionKey = z.infer<typeof SectionKey>;
 
+const DeepDiveSchema = z
+  .object({
+    title: z.string(),
+    standfirst: z.string().default(""),
+    body: z.union([z.array(z.string()), z.string()]).transform((v) =>
+      Array.isArray(v) ? v : [v]
+    ),
+    pullQuote: z.string().default(""),
+    sourceUrl: z.string().url().optional(),
+    tags: z.array(z.string()).default([]),
+  })
+  .nullable()
+  .optional();
+
 const FrontmatterSchema = z.object({
   title: z.string(),
   slug: z.string(),
@@ -26,15 +40,7 @@ const FrontmatterSchema = z.object({
   sections: z.object({
     tldr: z.array(z.string()).default([]),
     builders: z.array(ItemSchema).default([]),
-    deepDive: z
-      .object({
-        title: z.string(),
-        body: z.string(),
-        sourceUrl: z.string().url().optional(),
-        tags: z.array(z.string()).default([]),
-      })
-      .nullable()
-      .optional(),
+    deepDive: DeepDiveSchema,
     everythingElse: z.array(ItemSchema).default([]),
   }),
 });

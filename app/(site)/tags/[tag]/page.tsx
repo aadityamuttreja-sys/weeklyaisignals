@@ -2,15 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getAllTags, getIssuesByTag } from "@/lib/tags";
-
-function formatDate(iso: string) {
-  return new Date(iso + "T00:00:00Z").toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    timeZone: "UTC",
-  });
-}
+import { Footer } from "@/components/Footer";
+import { fmtDateShort } from "@/lib/date";
 
 export function generateStaticParams() {
   return getAllTags().map((tag) => ({ tag }));
@@ -23,8 +16,8 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { tag } = await params;
   return {
-    title: `#${tag}`,
-    description: `Every issue of Weekly AI Signals tagged #${tag}.`,
+    title: `#${decodeURIComponent(tag)}`,
+    description: `Every issue of Weekly AI Signals tagged #${decodeURIComponent(tag)}.`,
   };
 }
 
@@ -39,35 +32,55 @@ export default async function TagPage({
   if (!issues.length) notFound();
 
   return (
-    <div>
-      <header className="mb-10">
-        <p className="smallcaps mb-3">Tag</p>
-        <h1 className="font-serif text-[32px] font-semibold leading-[1.2] tracking-tight">
+    <main className="mx-auto max-w-[1180px] px-6">
+      <header className="pt-24 pb-12">
+        <div className="smallcaps">Tag</div>
+        <h1 className="mt-3 font-serif text-[clamp(2.4rem,7vw,5rem)] font-medium leading-[1.05] tracking-tight text-accent">
           #{decoded}
         </h1>
-        <p className="mt-4 text-muted">
-          {issues.length} issue{issues.length === 1 ? "" : "s"} tagged{" "}
-          <span className="smallcaps">#{decoded}</span>.
+        <p className="mt-6 max-w-[38rem] font-serif text-[1.18rem] leading-[1.5] text-ink-muted">
+          {issues.length} {issues.length === 1 ? "issue" : "issues"} filed under{" "}
+          <span className="font-mono text-[0.92em] text-accent">#{decoded}</span>.
         </p>
+        <div className="mt-12 h-px bg-rule" />
       </header>
-      <ul>
-        {issues.map((issue) => (
-          <li key={issue.slug} className="border-b border-rule py-7">
-            <p className="smallcaps mb-2">
-              Issue {issue.issueNumber} · {formatDate(issue.publishDate)}
-            </p>
-            <h2 className="font-serif text-[22px] font-semibold leading-[1.3] tracking-tight">
-              <Link href={`/issues/${issue.slug}`}>{issue.title}</Link>
-            </h2>
-            <p className="mt-2 text-[17px] leading-[1.6] text-muted">{issue.summary}</p>
+
+      <ol className="m-0 list-none p-0 pb-24">
+        {issues.map((iss) => (
+          <li key={iss.slug} className="border-b border-rule-soft last:border-b-0">
+            <Link
+              href={`/issues/${iss.slug}`}
+              className="grid grid-cols-[64px_100px_1fr] items-baseline gap-4 py-6 transition-colors hover:bg-accent/5"
+            >
+              <span className="font-mono text-[0.74rem] tabular-nums tracking-[0.04em] text-ink-faint">
+                №{String(iss.issueNumber).padStart(2, "0")}
+              </span>
+              <span className="font-mono text-[0.74rem] tabular-nums tracking-[0.04em] text-ink-muted">
+                {fmtDateShort(iss.publishDate).toUpperCase()}
+              </span>
+              <div>
+                <div className="font-serif text-[1.18rem] font-medium text-ink-strong">
+                  {iss.title}
+                </div>
+                <p className="mt-1 max-w-[38rem] font-serif text-[1rem] leading-[1.55] text-ink-muted">
+                  {iss.summary}
+                </p>
+              </div>
+            </Link>
           </li>
         ))}
-      </ul>
-      <p className="mt-8">
-        <Link href="/archive" className="smallcaps !border-b-0">
-          ← Back to archive
+      </ol>
+
+      <p className="pb-12">
+        <Link
+          href="/archive"
+          className="font-mono text-[0.78rem] tracking-[0.08em] text-ink-muted hover:text-accent"
+        >
+          ← BACK TO ARCHIVE
         </Link>
       </p>
-    </div>
+
+      <Footer />
+    </main>
   );
 }

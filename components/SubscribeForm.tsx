@@ -1,76 +1,111 @@
 "use client";
 
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 
-export function SubscribeForm({ compact = false }: { compact?: boolean }) {
+export interface SubscribeFormProps {
+  source?: string;
+  variant?: "block" | "inline";
+}
+
+export function SubscribeForm({
+  source = "site",
+  variant = "block",
+}: SubscribeFormProps) {
   const [email, setEmail] = useState("");
-  const [state, setState] = useState<"idle" | "loading" | "ok" | "err">("idle");
-  const [message, setMessage] = useState("");
+  const [state, setState] = useState<"idle" | "sending" | "done" | "error">("idle");
 
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function submit(e: FormEvent) {
     e.preventDefault();
-    setState("loading");
-    setMessage("");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setState("error");
+      return;
+    }
+    setState("sending");
     try {
-      const res = await fetch("/api/subscribe", {
+      const r = await fetch("/api/subscribe", {
         method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ email }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, source }),
       });
-      const data = await res.json();
-      if (!res.ok) {
-        setState("err");
-        setMessage(data.error ?? "Something went wrong.");
-      } else {
-        setState("ok");
-        setMessage("You're on the list. Check your inbox each Monday.");
-        setEmail("");
-      }
+      setState(r.ok ? "done" : "error");
     } catch {
-      setState("err");
-      setMessage("Network error. Try again in a moment.");
+      setState("error");
     }
   }
 
-  return (
-    <div
-      className={
-        compact
-          ? "border-y border-rule py-8"
-          : "border-y border-rule bg-paper py-10"
-      }
-    >
-      <p className="smallcaps mb-3">Get it weekly</p>
-      <p className="mb-5 font-serif text-[20px] leading-[1.45] text-ink">
-        One short, dense email each Monday on what actually changed in AI.
-      </p>
-      <form onSubmit={onSubmit} className="flex flex-wrap items-stretch gap-3">
+  if (variant === "inline") {
+    return (
+      <form
+        onSubmit={submit}
+        className="flex items-stretch gap-3 border-t border-rule pt-3"
+      >
         <input
+          className="field flex-1"
           type="email"
-          required
+          placeholder="you@domain.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@domain.com"
-          className="flex-1 min-w-[200px] border border-rule bg-paper px-4 py-3 font-sans text-[15px] text-ink placeholder:text-muted focus:border-ink focus:outline-none"
-          disabled={state === "loading"}
+          disabled={state === "sending" || state === "done"}
         />
         <button
-          type="submit"
-          disabled={state === "loading"}
-          className="border border-ink bg-ink px-5 py-3 font-sans text-[14px] font-semibold uppercase tracking-[0.08em] text-paper transition-colors hover:bg-accent hover:border-accent disabled:opacity-60"
+          className="btn whitespace-nowrap"
+          disabled={state === "sending" || state === "done"}
         >
-          {state === "loading" ? "Subscribing…" : "Subscribe"}
+          {state === "done" ? "Subscribed" : state === "sending" ? "…" : "Subscribe"}
         </button>
       </form>
-      {message ? (
-        <p
-          className={`mt-3 font-sans text-[14px] ${
-            state === "ok" ? "text-ink" : "text-accent"
-          }`}
-        >
-          {message}
-        </p>
-      ) : null}
+    );
+  }
+  return (
+    <div className="py-24">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-24">
+        <div>
+          <div className="smallcaps">Subscribe</div>
+          <h2 className="mt-3 max-w-[18ch] font-serif text-[clamp(1.9rem,3vw,2.4rem)] font-medium leading-tight tracking-tight text-ink-strong">
+            One issue every Monday. No filler.
+          </h2>
+          <p className="mt-5 font-serif text-[1.05rem] leading-[1.62] text-ink-muted">
+            A weekly read of what changed in AI — written for executives, builders,
+            and practitioners. Free, no tracking pixels, unsubscribe with one click.
+          </p>
+        </div>
+        <form onSubmit={submit} className="mt-5 flex flex-col gap-2">
+          <label
+            className="font-mono text-[0.74rem] tracking-[0.06em] text-ink-muted"
+            htmlFor={`sub-${source}`}
+          >
+            EMAIL
+          </label>
+          <input
+            id={`sub-${source}`}
+            className="field"
+            type="email"
+            placeholder="you@domain.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={state === "sending" || state === "done"}
+          />
+          <div className="mt-3 flex items-center justify-between gap-3">
+            <button
+              className="btn"
+              disabled={state === "sending" || state === "done"}
+            >
+              {state === "done"
+                ? "Subscribed ✓"
+                : state === "sending"
+                  ? "Sending…"
+                  : "Subscribe"}
+            </button>
+            <span
+              className={`font-mono text-[0.74rem] tracking-[0.06em] ${
+                state === "error" ? "text-accent" : "text-ink-faint"
+              }`}
+            >
+              {state === "error" ? "INVALID EMAIL" : "POST /api/subscribe"}
+            </span>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

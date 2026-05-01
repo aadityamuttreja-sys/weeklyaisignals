@@ -1,10 +1,22 @@
 import Link from "next/link";
 
-export function TagChip({ tag }: { tag: string }) {
+export interface TagChipProps {
+  tag: string;
+  active?: boolean;
+  className?: string;
+}
+
+export function TagChip({ tag, active = false, className = "" }: TagChipProps) {
   return (
     <Link
-      href={`/tags/${encodeURIComponent(tag)}`}
-      className="smallcaps !border-b-0 mr-3 inline-block hover:text-accent"
+      href={`/tags/${tag}`}
+      className={[
+        "font-mono text-[0.72rem] text-ink-muted hover:text-accent transition-colors",
+        active && "text-accent",
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
     >
       #{tag}
     </Link>
@@ -14,7 +26,7 @@ export function TagChip({ tag }: { tag: string }) {
 export function TagList({ tags }: { tags: string[] }) {
   if (!tags.length) return null;
   return (
-    <div className="-mr-3 mt-2 flex flex-wrap">
+    <div className="flex flex-wrap gap-3">
       {tags.map((t) => (
         <TagChip key={t} tag={t} />
       ))}

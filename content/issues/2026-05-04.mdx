@@ -1,5 +1,5 @@
 ---
-title: "Issue 1 — The week the agents grew up"
+title: "The week the agents grew up"
 slug: "2026-05-04"
 issueNumber: 1
 publishDate: "2026-05-04"
@@ -42,7 +42,13 @@ sections:
       tags: [agents, evals]
   deepDive:
     title: "Are we measuring capability, or memorization?"
-    body: "DeepMind's new paper, *Capability-Isolating Evaluation*, takes aim at the quiet rot in modern model benchmarks: as training corpora absorb every public test set, scores increasingly reflect leakage rather than ability. The authors propose a methodology that constructs evals from procedurally generated tasks with no public-text exposure, then validates that frontier models drop substantially on these tests relative to their public-benchmark performance.\n\nThe interesting move isn't the benchmark itself — others have tried procedural generation before — but the framework for *deciding* whether a benchmark is leak-resistant. They define three properties (novelty, isomorphism resistance, and grounding) and offer a checklist you can run against any eval suite before trusting its scores.\n\nFor practitioners, the practical takeaway is uncomfortable: most public benchmarks you cite in pitch decks are probably contaminated. The pragmatic response is to build a small private eval set tied directly to your product's tasks, version it, and treat it as the source of truth — public benchmarks become a sanity check, not a north star.\n\nFor researchers, the paper is an invitation to a more honest era of measurement. Expect a wave of follow-on work redefining what 'state of the art' means once you control for leakage."
+    standfirst: "DeepMind takes aim at the quiet rot in modern model benchmarks — and proposes a framework for telling real progress from contamination."
+    body:
+      - "DeepMind's new paper, Capability-Isolating Evaluation, takes aim at the quiet rot in modern model benchmarks: as training corpora absorb every public test set, scores increasingly reflect leakage rather than ability. The authors propose a methodology that constructs evals from procedurally generated tasks with no public-text exposure, then validates that frontier models drop substantially on these tests relative to their public-benchmark performance."
+      - "The interesting move isn't the benchmark itself — others have tried procedural generation before — but the framework for deciding whether a benchmark is leak-resistant. They define three properties (novelty, isomorphism resistance, and grounding) and offer a checklist you can run against any eval suite before trusting its scores."
+      - "For practitioners, the practical takeaway is uncomfortable: most public benchmarks you cite in pitch decks are probably contaminated. The pragmatic response is to build a small private eval set tied directly to your product's tasks, version it, and treat it as the source of truth — public benchmarks become a sanity check, not a north star."
+      - "For researchers, the paper is an invitation to a more honest era of measurement. Expect a wave of follow-on work redefining what 'state of the art' means once you control for leakage."
+    pullQuote: "Most public benchmarks you cite in pitch decks are probably contaminated. Build a small private eval set, version it, and treat it as the source of truth."
     sourceUrl: "https://example.com/capability-isolating-eval"
     tags: [research, evals, papers]
   everythingElse:
@@ -73,6 +79,4 @@ sections:
       tags: [infra, tooling]
 ---
 
-This is the first issue of Weekly AI Signals. The goal is simple: each Monday, a short, dense read on what actually changed in AI — across research, products, and infrastructure — written so an executive can skim the top, a builder can lift a takeaway, and a practitioner can dive deep.
-
-If you find this useful, the best thing you can do is forward it to one person who'd appreciate it.
+This is the first issue of Weekly AI Signals. The goal is simple: each Monday, a short, dense read on what actually changed in AI — across research, products, and infrastructure.
