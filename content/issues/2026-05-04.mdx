@@ -1,0 +1,78 @@
+---
+title: "Issue 1 — The week the agents grew up"
+slug: "2026-05-04"
+issueNumber: 1
+publishDate: "2026-05-04"
+status: published
+summary: "Agent benchmarks finally start measuring something useful, three open-weights releases tighten the gap with frontier closed models, and a quiet paper from DeepMind reframes how to think about evals."
+readingTimeMinutes: 6
+tags: [agents, evals, models, opensource, research]
+sections:
+  tldr:
+    - "Anthropic and OpenAI both shipped agent-focused evals this week — the first that score on multi-step task completion rather than single-turn answers."
+    - "Three open-weights model releases (a 70B reasoning model, a 32B coder, a 7B speech) all close meaningfully on closed-model benchmarks at a fraction of the cost."
+    - "DeepMind's new paper argues most evals are measuring memorization, not capability, and proposes a framework for capability-isolating tests."
+    - "Two well-funded agent startups quietly pivoted from 'autonomous everything' to narrow vertical workflows — a pattern worth watching."
+    - "Vercel and Cloudflare both shipped durable-execution primitives for agent workflows; the infra layer for agents is converging."
+  builders:
+    - title: "OpenAI's Agents SDK 1.0 ships durable runs and structured handoffs"
+      url: "https://example.com/agents-sdk-1"
+      source: "OpenAI"
+      summary: "First-class durable execution, structured handoffs between agents, and tracing that maps cleanly to OpenTelemetry. If you're building multi-step agents, the ergonomics here are worth a serious look — especially the handoff primitive, which removes a lot of glue code."
+      tags: [agents, infra, tooling]
+    - title: "A practical eval harness for tool-using agents"
+      url: "https://example.com/eval-harness"
+      source: "Latent Space"
+      summary: "Walks through building task-completion evals for agents that use tools, with concrete code. The framing — score the trajectory, not just the final answer — is the right mental model for anyone shipping agents to production."
+      tags: [agents, evals, tooling]
+    - title: "Llama-Reasoner-70B: open weights, frontier-adjacent reasoning"
+      url: "https://example.com/llama-reasoner"
+      source: "Hugging Face"
+      summary: "Closes most of the gap with the leading closed reasoning models on math and code benchmarks, MIT-licensed, and runs on a single H100 with quantization. The cost-per-token math now favors self-hosting for many reasoning workloads."
+      tags: [models, opensource, infra]
+    - title: "Cloudflare Workflows hits GA with agent-shaped APIs"
+      url: "https://example.com/cf-workflows"
+      source: "Cloudflare"
+      summary: "Durable, step-based execution at the edge, with first-class support for long-running LLM calls and human-in-the-loop steps. Worth comparing against Inngest and Temporal if you're picking infra for an agent product this quarter."
+      tags: [infra, agents]
+    - title: "How to actually measure agent reliability in production"
+      url: "https://example.com/agent-reliability"
+      source: "Anthropic"
+      summary: "Engineering post on the metrics that matter once an agent is live: task completion rate, intervention rate, time-to-recovery from a stuck state. Pragmatic and refreshingly honest about how often agents get stuck."
+      tags: [agents, evals]
+  deepDive:
+    title: "Are we measuring capability, or memorization?"
+    body: "DeepMind's new paper, *Capability-Isolating Evaluation*, takes aim at the quiet rot in modern model benchmarks: as training corpora absorb every public test set, scores increasingly reflect leakage rather than ability. The authors propose a methodology that constructs evals from procedurally generated tasks with no public-text exposure, then validates that frontier models drop substantially on these tests relative to their public-benchmark performance.\n\nThe interesting move isn't the benchmark itself — others have tried procedural generation before — but the framework for *deciding* whether a benchmark is leak-resistant. They define three properties (novelty, isomorphism resistance, and grounding) and offer a checklist you can run against any eval suite before trusting its scores.\n\nFor practitioners, the practical takeaway is uncomfortable: most public benchmarks you cite in pitch decks are probably contaminated. The pragmatic response is to build a small private eval set tied directly to your product's tasks, version it, and treat it as the source of truth — public benchmarks become a sanity check, not a north star.\n\nFor researchers, the paper is an invitation to a more honest era of measurement. Expect a wave of follow-on work redefining what 'state of the art' means once you control for leakage."
+    sourceUrl: "https://example.com/capability-isolating-eval"
+    tags: [research, evals, papers]
+  everythingElse:
+    - title: "Mistral releases a permissive 32B coder"
+      url: "https://example.com/mistral-coder"
+      source: "Mistral"
+      summary: "Apache-licensed, beats prior open coding models on HumanEval+ and SWE-bench Lite."
+      tags: [models, opensource]
+    - title: "A 7B speech model that runs on a phone"
+      url: "https://example.com/speech-7b"
+      source: "Hugging Face"
+      summary: "On-device transcription and synthesis quality jumps materially. Real-time voice agents on mobile are now plausible."
+      tags: [models, opensource, voice]
+    - title: "EU AI Act: first compliance deadline lands this month"
+      url: "https://example.com/eu-ai-act"
+      source: "Politico"
+      summary: "Provider-of-GPAI obligations kick in. Quick legal-team primer linked."
+      tags: [policy]
+    - title: "The narrow-vertical agent thesis"
+      url: "https://example.com/narrow-agents"
+      source: "Hacker News"
+      summary: "Two YC-backed agent companies pivot from horizontal to vertical. Recurring pattern across the cohort."
+      tags: [products, agents]
+    - title: "A practical guide to prompt caching"
+      url: "https://example.com/prompt-caching"
+      source: "Anthropic"
+      summary: "Concrete patterns and anti-patterns. If you're making more than ~10 calls per session with shared context, you're probably leaving money on the table."
+      tags: [infra, tooling]
+---
+
+This is the first issue of Weekly AI Signals. The goal is simple: each Monday, a short, dense read on what actually changed in AI — across research, products, and infrastructure — written so an executive can skim the top, a builder can lift a takeaway, and a practitioner can dive deep.
+
+If you find this useful, the best thing you can do is forward it to one person who'd appreciate it.
