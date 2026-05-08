@@ -111,7 +111,7 @@ export function ArchiveList({
           >
             <div>
               <div className="sticky top-6">
-                <div className="font-serif text-[clamp(2rem,5vw,4rem)] font-medium leading-none tracking-tight tabular-nums text-ink-strong">
+                <div className="font-serif text-[clamp(2rem,5vw,4rem)] font-normal leading-none tracking-tight tabular-nums text-ink-strong">
                   {year}
                 </div>
                 <div className="mt-2 font-mono text-[0.74rem] tracking-[0.08em] text-ink-faint">
@@ -123,27 +123,27 @@ export function ArchiveList({
               {issues.map((iss) => (
                 <li
                   key={iss.slug}
-                  className="border-t border-rule-soft first:border-t-0"
+                  className="relative border-t border-rule-soft transition-colors first:border-t-0 hover:bg-accent/[0.04]"
                 >
-                  <Link
-                    href={`/issues/${iss.slug}`}
-                    className="grid grid-cols-[64px_100px_1fr_auto] items-baseline gap-4 py-4 transition-colors hover:bg-accent/5"
-                  >
+                  <div className="grid grid-cols-[64px_100px_1fr_auto] items-baseline gap-4 py-4">
                     <span className="font-mono text-[0.74rem] tabular-nums tracking-[0.04em] text-ink-faint">
                       №{String(iss.issueNumber).padStart(2, "0")}
                     </span>
                     <span className="font-mono text-[0.74rem] tabular-nums tracking-[0.04em] text-ink-muted">
                       {fmtDateShort(iss.publishDate).toUpperCase()}
                     </span>
-                    <span className="font-serif text-[1.18rem] font-medium text-ink-strong">
+                    <Link
+                      href={`/issues/${iss.slug}`}
+                      className="font-serif text-[1.18rem] font-normal text-ink-strong after:absolute after:inset-0 after:content-['']"
+                    >
                       {iss.title}
-                    </span>
-                    <span className="flex gap-3">
+                    </Link>
+                    <span className="relative z-10 flex gap-3">
                       {iss.tags.slice(0, 3).map((t) => (
                         <TagChip key={t} tag={t} />
                       ))}
                     </span>
-                  </Link>
+                  </div>
                 </li>
               ))}
             </ol>
