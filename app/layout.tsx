@@ -1,24 +1,20 @@
 import type { Metadata } from "next";
-import { Newsreader, Geist, JetBrains_Mono } from "next/font/google";
+import { IBM_Plex_Mono, Instrument_Serif } from "next/font/google";
 import { Masthead } from "@/components/Masthead";
 import "./globals.css";
 
-const serif = Newsreader({
+const serif = Instrument_Serif({
   subsets: ["latin"],
   variable: "--font-serif",
   display: "swap",
-  weight: ["400", "500", "600", "700"],
+  weight: "400",
   style: ["normal", "italic"],
 });
-const sans = Geist({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  display: "swap",
-});
-const mono = JetBrains_Mono({
+const mono = IBM_Plex_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
   display: "swap",
+  weight: ["400", "500", "600"],
 });
 
 export const metadata: Metadata = {
@@ -35,13 +31,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html
-      lang="en"
-      className={`${serif.variable} ${sans.variable} ${mono.variable}`}
-    >
+    <html lang="en" className={`${serif.variable} ${mono.variable}`}>
       <body>
-        <Masthead />
-        {children}
+        <div className="tx-scanline" aria-hidden />
+        <div className="tx-content">
+          <Masthead />
+          {children}
+        </div>
       </body>
     </html>
   );

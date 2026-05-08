@@ -11,18 +11,18 @@ export function Item({ item, index }: { item: ItemType; index: number }) {
         <div className="mb-2 font-mono text-[0.74rem] tracking-[0.06em] text-ink-muted">
           {item.source.toUpperCase()}
         </div>
-        <h3 className="font-serif text-[1.5rem] font-medium leading-tight text-ink-strong">
+        <h3 className="font-serif text-[1.5rem] font-normal leading-tight text-ink-strong">
           <a href={item.url} target="_blank" rel="noreferrer" className="link-rule">
             {item.title}
           </a>
         </h3>
         {item.summary ? (
-          <p className="mt-3 max-w-[38rem] font-serif text-[1.05rem] leading-[1.62] text-ink">
+          <p className="mt-3 max-w-measure-wide font-serif text-[1.125rem] leading-[1.55] text-ink md:text-[1.22rem]">
             {item.summary}
           </p>
         ) : null}
         {item.tags.length ? (
-          <div className="mt-3 flex gap-3">
+          <div className="mt-3 flex flex-wrap gap-3">
             {item.tags.map((t) => (
               <TagChip key={t} tag={t} />
             ))}
@@ -35,8 +35,8 @@ export function Item({ item, index }: { item: ItemType; index: number }) {
 
 export function CompactItem({ item }: { item: ItemType }) {
   return (
-    <article className="grid grid-cols-[110px_1fr] gap-4 border-b border-rule-soft py-4 last:border-b-0">
-      <div className="pt-[0.45em] font-mono text-[0.74rem] tracking-[0.06em] text-ink-muted">
+    <article className="grid grid-cols-[110px_1fr] gap-4 border-b border-rule py-4 font-mono text-[0.92rem] last:border-b-0">
+      <div className="pt-[0.45em] text-[0.74rem] tracking-[0.06em] text-ink-muted">
         {item.source.toUpperCase()}
       </div>
       <div>
@@ -52,11 +52,9 @@ export function CompactItem({ item }: { item: ItemType }) {
           <span className="text-ink-muted"> — {item.summary}</span>
         ) : null}
         {item.tags.length ? (
-          <span className="ml-1 whitespace-nowrap">
+          <span className="ml-1 inline-flex flex-wrap gap-2">
             {item.tags.map((t) => (
-              <span key={t} className="ml-3">
-                <TagChip tag={t} />
-              </span>
+              <TagChip key={t} tag={t} />
             ))}
           </span>
         ) : null}

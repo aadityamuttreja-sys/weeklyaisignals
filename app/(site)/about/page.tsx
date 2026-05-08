@@ -13,52 +13,37 @@ export default function AboutPage() {
   const tagCount = getAllTags().length;
 
   return (
-    <main className="mx-auto max-w-[1180px] px-6">
-      <header className="pt-24 pb-12">
+    <main className="tx-main pb-24">
+      <header className="border-b border-dashed border-rule-soft pb-12 pt-16 md:pt-20">
         <div className="smallcaps">About</div>
-        <h1 className="mt-3 max-w-[18ch] font-serif text-[clamp(2.4rem,4.6vw,3.6rem)] font-medium leading-[1.05] tracking-tight text-ink-strong">
+        <h1 className="mt-3 max-w-[18ch] font-serif text-[clamp(2.4rem,6vw,3.75rem)] font-normal leading-[1.05] tracking-tight text-ink-strong">
           What this is.
         </h1>
-        <div className="mt-12 h-px bg-rule" />
       </header>
 
-      <article className="grid grid-cols-1 gap-6 py-12 pb-24 lg:grid-cols-[200px_minmax(0,38rem)] lg:gap-16 lg:justify-start">
-        <aside className="font-sans text-[0.84rem]">
-          <div className="lg:sticky lg:top-6">
-            <div className="border border-rule p-5">
-              <div className="smallcaps">By the numbers</div>
-              <dl className="mt-4 grid grid-cols-2 gap-y-3">
-                <dt className="font-mono text-[0.74rem] tracking-[0.06em] text-ink-faint">
-                  ISSUES
-                </dt>
-                <dd className="font-serif text-[1.05rem] font-medium tabular-nums text-ink-strong">
-                  {issueCount}
-                </dd>
-                <dt className="font-mono text-[0.74rem] tracking-[0.06em] text-ink-faint">
-                  TAGS
-                </dt>
-                <dd className="font-serif text-[1.05rem] font-medium tabular-nums text-ink-strong">
-                  {tagCount}
-                </dd>
-                <dt className="font-mono text-[0.74rem] tracking-[0.06em] text-ink-faint">
-                  CADENCE
-                </dt>
-                <dd className="font-serif text-[1.05rem] font-medium text-ink-strong">
-                  Weekly
-                </dd>
-                <dt className="font-mono text-[0.74rem] tracking-[0.06em] text-ink-faint">
-                  COST
-                </dt>
-                <dd className="font-serif text-[1.05rem] font-medium text-ink-strong">
-                  Free
-                </dd>
-              </dl>
-            </div>
+      <article className="grid grid-cols-1 gap-10 py-14 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-16">
+        <aside className="font-mono text-[0.84rem] lg:sticky lg:top-20 lg:self-start">
+          <div className="border border-rule-soft bg-paper-deep/50 p-5">
+            <div className="smallcaps">By the numbers</div>
+            <dl className="mt-4 grid grid-cols-2 gap-y-3">
+              <dt className="text-[0.74rem] tracking-[0.06em] text-ink-faint">ISSUES</dt>
+              <dd className="font-serif text-[1.05rem] font-normal tabular-nums text-ink-strong">
+                {issueCount}
+              </dd>
+              <dt className="text-[0.74rem] tracking-[0.06em] text-ink-faint">TAGS</dt>
+              <dd className="font-serif text-[1.05rem] font-normal tabular-nums text-ink-strong">
+                {tagCount}
+              </dd>
+              <dt className="text-[0.74rem] tracking-[0.06em] text-ink-faint">CADENCE</dt>
+              <dd className="font-serif text-[1.05rem] font-normal text-ink-strong">Weekly</dd>
+              <dt className="text-[0.74rem] tracking-[0.06em] text-ink-faint">COST</dt>
+              <dd className="font-serif text-[1.05rem] font-normal text-ink-strong">Free</dd>
+            </dl>
           </div>
         </aside>
 
-        <div className="space-y-6 font-serif text-[1.05rem] leading-[1.62] text-ink">
-          <p className="font-serif text-[1.18rem] italic leading-[1.5] text-ink-muted">
+        <div className="max-w-measure-wide space-y-6 font-serif text-[1.05rem] leading-[1.62] text-ink md:text-[1.12rem]">
+          <p className="border-l-2 border-accent pl-5 font-mono text-[15px] italic leading-[1.55] text-ink-muted md:text-[16px]">
             Weekly AI Signals is a single, dense email each Monday on what
             actually changed in AI the prior week — across research, products,
             and infrastructure.

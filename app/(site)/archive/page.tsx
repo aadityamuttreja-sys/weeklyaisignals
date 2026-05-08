@@ -28,13 +28,13 @@ export default function ArchivePage() {
   const allTags = getAllTags();
 
   return (
-    <main className="mx-auto max-w-[1180px] px-6">
-      <header className="pt-24 pb-12">
+    <main className="tx-main pb-24">
+      <header className="border-b border-dashed border-rule-soft pb-12 pt-16 md:pt-20">
         <div className="smallcaps">Archive</div>
-        <h1 className="mt-3 max-w-[18ch] font-serif text-[clamp(2.4rem,4.6vw,3.6rem)] font-medium leading-[1.05] tracking-tight text-ink-strong">
+        <h1 className="mt-3 max-w-[18ch] font-serif text-[clamp(2.4rem,6vw,3.75rem)] font-normal leading-[1.05] tracking-tight text-ink-strong">
           Every issue, by week.
         </h1>
-        <p className="mt-6 max-w-[38rem] font-serif text-[1.18rem] leading-[1.5] text-ink-muted">
+        <p className="mt-6 max-w-measure-wide font-mono text-[15px] leading-[1.55] text-ink-muted md:text-[16px]">
           {issues.length} {issues.length === 1 ? "issue" : "issues"} so far.
           Filter by topic, search by title, or scroll the years.
         </p>

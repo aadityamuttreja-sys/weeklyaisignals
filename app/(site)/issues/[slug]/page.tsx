@@ -58,65 +58,62 @@ export default async function IssuePage({
   );
 
   return (
-    <main className="mx-auto max-w-[1180px] px-6">
+    <main className="tx-main pb-24">
       <IssueHeader
         issueNumber={issue.issueNumber}
         publishDate={issue.publishDate}
         readingTimeMinutes={issue.readingTimeMinutes ?? 6}
         title={issue.title}
         summary={issue.summary}
+        slug={issue.slug}
       />
 
-      <article className="grid grid-cols-1 gap-6 py-12 pb-24 lg:grid-cols-[200px_minmax(0,38rem)] lg:gap-16 lg:justify-start">
-        <aside className="font-sans text-[0.84rem]">
-          <div className="lg:sticky lg:top-6">
-            <div className="smallcaps">Contents</div>
-            <ul className="mt-3 flex list-none flex-col gap-2 p-0">
+      <article className="grid grid-cols-1 gap-10 py-16 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-16 xl:gap-20">
+        <aside className="tx-toc lg:sticky lg:top-20 lg:self-start">
+          <span className="tx-toc-label">// CONTENTS</span>
+          <ol>
+            {tldr.length ? (
               <li>
-                <a href="#tldr" className="text-ink-muted hover:text-accent">
-                  The 60-second read
-                </a>
+                <a href="#tldr">The 60-second read</a>
               </li>
-              <li>
-                <a href="#builders" className="text-ink-muted hover:text-accent">
-                  For builders
-                </a>
-              </li>
-              {deepDive ? (
-                <li>
-                  <a href="#deepdive" className="text-ink-muted hover:text-accent">
-                    Deep dive
-                  </a>
-                </li>
-              ) : null}
-              <li>
-                <a href="#else" className="text-ink-muted hover:text-accent">
-                  Everything else
-                </a>
-              </li>
-            </ul>
-            <div className="my-6 h-px bg-rule-soft" />
-            <div className="smallcaps">Filed</div>
-            <div className="mt-3 flex flex-wrap gap-3">
-              {tags.slice(0, 8).map((t) => (
-                <TagChip key={t} tag={t} />
-              ))}
-            </div>
-            {deepDive ? (
-              <>
-                <div className="my-6 h-px bg-rule-soft" />
-                <a
-                  href="#deepdive"
-                  className="font-sans text-[0.84rem] font-medium text-accent"
-                >
-                  Skip to deep dive →
-                </a>
-              </>
             ) : null}
+            {builders.length ? (
+              <li>
+                <a href="#builders">For builders</a>
+              </li>
+            ) : null}
+            {deepDive ? (
+              <li>
+                <a href="#deepdive">Deep dive</a>
+              </li>
+            ) : null}
+            {everythingElse.length ? (
+              <li>
+                <a href="#else">Everything else</a>
+              </li>
+            ) : null}
+          </ol>
+          <div className="my-8 h-px bg-rule" />
+          <div className="tx-toc-label normal-case tracking-normal text-ink-faint">// TAGGED</div>
+          <div className="mt-3 flex flex-wrap gap-2 normal-case">
+            {tags.slice(0, 8).map((t) => (
+              <TagChip key={t} tag={t} />
+            ))}
           </div>
+          {deepDive ? (
+            <>
+              <div className="my-8 h-px bg-rule" />
+              <a
+                href="#deepdive"
+                className="inline-block font-mono text-[12px] normal-case tracking-normal text-accent hover:underline"
+              >
+                Skip to deep dive →
+              </a>
+            </>
+          ) : null}
         </aside>
 
-        <div>
+        <div className="max-w-measure-wide">
           {tldr.length ? (
             <Section kicker="01" label="The 60-second read" id="tldr">
               <TldrList items={tldr} />
@@ -129,7 +126,7 @@ export default async function IssuePage({
                 {builders.map((it, i) => (
                   <li
                     key={i}
-                    className="border-t border-rule-soft py-8 first:border-t-0 first:pt-3"
+                    className="border-t border-rule py-10 first:border-t-0 first:pt-4"
                   >
                     <Item item={it} index={i + 1} />
                   </li>
@@ -173,7 +170,7 @@ export default async function IssuePage({
 
       <div className="border-t border-rule pt-12">
         <div className="smallcaps">Tagged in this issue</div>
-        <div className="mt-4 flex flex-wrap gap-4">
+        <div className="mt-4 flex flex-wrap gap-3">
           {tags.map((t) => (
             <TagChip key={t} tag={t} />
           ))}

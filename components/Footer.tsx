@@ -1,51 +1,31 @@
 import Link from "next/link";
 
 export function Footer() {
+  const y = new Date().getFullYear();
   return (
-    <footer className="mt-24">
-      <div className="h-px bg-rule" />
-      <div className="mx-auto grid max-w-[1180px] grid-cols-1 gap-6 px-6 py-12 md:grid-cols-[2fr_3fr] md:gap-12">
-        <div className="flex flex-col gap-2">
-          <div className="font-serif italic text-[1.18rem] text-ink-strong">
-            Weekly AI Signals
-          </div>
-          <div className="font-mono text-[0.74rem] tracking-[0.06em] text-ink-faint">
-            EST. {new Date().getFullYear()} · CURATED WEEKLY
-          </div>
+    <footer className="mt-20">
+      <div className="border-t border-rule" />
+      <div className="tx-main flex flex-col gap-8 py-10 md:flex-row md:flex-wrap md:items-center md:justify-between md:gap-4">
+        <div className="flex flex-wrap items-center justify-between gap-4 text-[10px] uppercase tracking-[0.1em] text-ink-faint">
+          <span>// END OF TRANSMISSION</span>
+          <span className="text-sm tracking-[0.3em] text-accent">━━━ ✦ ━━━</span>
+          <span>
+            Weekly AI Signals · TX · {y}
+          </span>
         </div>
-        <div className="grid grid-cols-2 gap-6 sm:grid-cols-3">
-          <FooterCol title="Read">
-            <Link href="/archive">Archive</Link>
-            <Link href="/about">About</Link>
-            <a href="/rss.xml">RSS</a>
-          </FooterCol>
-          <FooterCol title="Tags">
-            <Link href="/tags/agents">#agents</Link>
-            <Link href="/tags/evals">#evals</Link>
-            <Link href="/tags/models">#models</Link>
-            <Link href="/tags/infra">#infra</Link>
-          </FooterCol>
-          <FooterCol title="Colophon">
-            <span>Newsreader · Geist · JetBrains Mono</span>
-            <span className="text-ink-faint">© {new Date().getFullYear()}</span>
-          </FooterCol>
+        <div className="grid grid-cols-2 gap-x-8 gap-y-3 border-t border-rule pt-8 font-mono text-[0.8rem] text-ink-muted md:border-t-0 md:pt-0 sm:grid-cols-4">
+          <Link href="/archive" className="hover:text-accent">
+            Archive
+          </Link>
+          <Link href="/about" className="hover:text-accent">
+            About
+          </Link>
+          <a href="/rss.xml" className="hover:text-accent">
+            RSS
+          </a>
+          <span className="text-ink-faint">Instrument · IBM Plex Mono</span>
         </div>
       </div>
     </footer>
-  );
-}
-
-function FooterCol({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex flex-col gap-2 font-sans text-[0.86rem] text-ink-muted [&_a:hover]:text-accent">
-      <div className="smallcaps mb-2">{title}</div>
-      {children}
-    </div>
   );
 }

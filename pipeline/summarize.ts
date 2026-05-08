@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
-import Anthropic from "@anthropic-ai/sdk";
+import type Anthropic from "@anthropic-ai/sdk";
+import { getClient } from "./anthropic-client";
 import type { RawItem, SummarizedItem } from "./types";
 
 const SYSTEM_PROMPT_PATH = path.join(
@@ -15,16 +16,6 @@ function loadSystem() {
   if (cachedSystem) return cachedSystem;
   cachedSystem = fs.readFileSync(SYSTEM_PROMPT_PATH, "utf8");
   return cachedSystem;
-}
-
-let client: Anthropic | null = null;
-function getClient() {
-  if (client) return client;
-  if (!process.env.ANTHROPIC_API_KEY) {
-    throw new Error("ANTHROPIC_API_KEY is not set");
-  }
-  client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-  return client;
 }
 
 const MODEL = "claude-sonnet-4-6";

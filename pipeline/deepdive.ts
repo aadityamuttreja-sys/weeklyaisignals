@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
-import Anthropic from "@anthropic-ai/sdk";
+import type Anthropic from "@anthropic-ai/sdk";
+import { getClient } from "./anthropic-client";
 import type { SummarizedItem } from "./types";
 
 const PROMPT_PATH = path.join(process.cwd(), "pipeline", "prompts", "deep-dive.md");
@@ -14,16 +15,6 @@ export type DeepDive = {
   sourceUrl?: string;
   tags: string[];
 };
-
-let client: Anthropic | null = null;
-function getClient() {
-  if (client) return client;
-  if (!process.env.ANTHROPIC_API_KEY) {
-    throw new Error("ANTHROPIC_API_KEY is not set");
-  }
-  client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-  return client;
-}
 
 export async function synthesizeDeepDive(
   items: SummarizedItem[]

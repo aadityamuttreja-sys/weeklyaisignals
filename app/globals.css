@@ -4,69 +4,217 @@
 
 @layer base {
   :root {
-    --paper: #f6f2ea;
-    --paper-deep: #efeae0;
-    --paper-edge: #e7e0d2;
+    /* Transmission palette (design reference) */
+    --paper: #0d0e0c;
+    --paper-deep: #121411;
+    --paper-edge: #1a1c18;
 
-    --ink: #1a1814;
-    --ink-strong: #0c0b09;
-    --ink-muted: #5b5347;
-    --ink-faint: #8a8170;
+    --ink: #e8e6df;
+    --ink-strong: #e8e6df;
+    --ink-muted: #8a8a82;
+    --ink-faint: #5a5a52;
 
-    --rule: #d6cdb9;
-    --rule-soft: #e3dccc;
+    --rule: #2a2c28;
+    --rule-soft: #3d3f3a;
 
-    --accent: #b3321c;
-    --accent-deep: #8c2715;
+    --accent: #c8ff00;
+    --accent-deep: #9fcc00;
+    --accent-glow: rgba(200, 255, 0, 0.25);
+
+    --magenta: #ff2ea8;
+    --cyan: #4dd6ff;
+    --warn: #ffa726;
   }
 
-  [data-theme="dark"] {
-    --paper: #14130f;
-    --paper-deep: #1b1915;
-    --paper-edge: #25221c;
-    --ink: #ecdfc6;
-    --ink-strong: #f6efde;
-    --ink-muted: #9a907c;
-    --ink-faint: #6b6555;
-    --rule: #2c2820;
-    --rule-soft: #221f19;
-    --accent: #e8765e;
-    --accent-deep: #f59478;
+  html {
+    scroll-behavior: smooth;
   }
 
-  html, body {
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  html,
+  body {
     background: var(--paper);
     color: var(--ink);
   }
 
   body {
-    font-family: var(--font-serif), "Newsreader", "Source Serif 4", "Iowan Old Style", Georgia, serif;
+    font-family: var(--font-serif), "Instrument Serif", "Iowan Old Style", Georgia, serif;
     font-feature-settings: "kern", "liga", "onum";
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+    background-image:
+      linear-gradient(var(--rule) 1px, transparent 1px),
+      linear-gradient(90deg, var(--rule) 1px, transparent 1px);
+    background-size: 64px 64px;
+    background-position: -1px -1px;
+    position: relative;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(200, 255, 0, 0.06), transparent 40%),
+      radial-gradient(ellipse at 80% 100%, rgba(255, 46, 168, 0.05), transparent 40%);
+    z-index: 1;
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image: repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 2px,
+      rgba(255, 255, 255, 0.015) 2px,
+      rgba(255, 255, 255, 0.015) 3px
+    );
+    z-index: 99;
   }
 
   ::selection {
-    background: #f1e6c8;
-    color: var(--ink-strong);
+    background: rgba(200, 255, 0, 0.35);
+    color: var(--paper);
   }
+}
+
+/* Scanline sits above grain, below content */
+.tx-scanline {
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(200, 255, 0, 0.2), transparent);
+  pointer-events: none;
+  z-index: 98;
+  animation: tx-scan 8s linear infinite;
+}
+
+@keyframes tx-scan {
+  0% {
+    top: -10px;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    top: 100vh;
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tx-scanline {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+.tx-blink-dot {
+  width: 8px;
+  height: 8px;
+  animation: tx-blink-dot 1.4s steps(2, end) infinite;
+}
+@keyframes tx-blink-dot {
+  50% {
+    opacity: 0.2;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tx-blink-dot {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+.tx-content {
+  position: relative;
+  z-index: 2;
+}
+
+.tx-main {
+  @apply relative z-[2] mx-auto max-w-[1140px] px-6;
+}
+
+.tx-toc {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  line-height: 1.8;
+  color: var(--ink-faint);
+}
+.tx-toc-label {
+  color: var(--accent);
+  margin-bottom: 12px;
+  display: block;
+}
+.tx-toc ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: tx-toc;
+  border-left: 1px solid var(--rule);
+}
+.tx-toc ol li {
+  counter-increment: tx-toc;
+  padding: 6px 0 6px 16px;
+  position: relative;
+}
+.tx-toc ol li::before {
+  content: counter(tx-toc, decimal-leading-zero);
+  position: absolute;
+  left: 16px;
+  top: 6px;
+  color: var(--ink-faint);
+  font-size: 10px;
+}
+.tx-toc ol li a {
+  color: var(--ink-muted);
+  padding-left: 28px;
+  display: inline-block;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.tx-toc ol li a:hover {
+  color: var(--accent);
 }
 
 @layer components {
   .smallcaps {
-    @apply font-sans font-medium uppercase text-ink-muted;
+    @apply font-mono font-medium uppercase text-ink-faint;
     font-size: 0.7rem;
     letter-spacing: 0.14em;
   }
   .field {
     @apply w-full border-0 border-b border-rule bg-transparent py-2.5
-           font-sans text-[0.92rem] text-ink-strong outline-none
-           transition-colors placeholder:text-ink-faint focus:border-ink-strong;
+           font-mono text-[0.92rem] text-ink-strong outline-none
+           transition-colors placeholder:text-ink-faint focus:border-accent;
   }
   .btn {
-    @apply cursor-pointer border-0 bg-ink-strong px-4 py-2.5 font-sans
-           text-[0.82rem] font-medium text-paper transition-colors
-           hover:bg-ink disabled:opacity-60;
+    @apply cursor-pointer border-0 px-4 py-2.5 font-mono
+           text-[0.82rem] font-medium transition-colors
+           disabled:opacity-60;
+    background: var(--accent);
+    color: var(--paper);
+  }
+  .btn:hover:not(:disabled) {
+    background: var(--accent-deep);
+    color: var(--paper);
   }
   .btn-ghost {
     @apply border border-rule bg-transparent text-ink-strong hover:bg-paper-deep;
@@ -74,23 +222,111 @@
   .tag-btn {
     @apply cursor-pointer border border-rule bg-transparent px-2.5 py-1.5
            font-mono text-[0.78rem] text-ink-muted transition-all
-           hover:border-ink-faint hover:text-ink-strong;
+           hover:border-accent hover:text-accent;
   }
   .tag-btn.is-on {
-    @apply border-ink-strong bg-ink-strong text-paper;
+    @apply border-accent text-accent;
+    background: rgba(200, 255, 0, 0.08);
   }
   .tag-btn.is-clear {
-    @apply border-accent text-accent hover:bg-accent hover:text-paper;
+    @apply border-magenta text-magenta;
+  }
+  .tag-btn.is-clear:hover {
+    background: rgba(255, 46, 168, 0.08);
   }
   .link-rule {
     background-image: linear-gradient(var(--accent), var(--accent));
     background-size: 0 1px;
     background-repeat: no-repeat;
     background-position: 0 95%;
-    transition: background-size .25s ease, color .15s ease;
+    transition:
+      background-size 0.25s ease,
+      color 0.15s ease;
   }
   .link-rule:hover {
     background-size: 100% 1px;
     color: var(--accent);
+  }
+
+  /* Terminal (issue hero) */
+  .tx-terminal {
+    margin-top: 2.5rem;
+    background: rgba(8, 9, 7, 0.85);
+    border: 1px solid var(--rule-soft);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgba(200, 255, 0, 0.04),
+      0 30px 80px -30px rgba(0, 0, 0, 0.8);
+  }
+  .tx-terminal-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--rule);
+    background: rgba(20, 22, 18, 0.6);
+    font-size: 11px;
+    color: var(--ink-faint);
+    font-family: var(--font-mono), ui-monospace, monospace;
+  }
+  .tx-terminal-bar .tx-dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+  }
+  .tx-terminal-bar .tx-dot.r {
+    background: #ff5f56;
+  }
+  .tx-terminal-bar .tx-dot.y {
+    background: #ffbd2e;
+  }
+  .tx-terminal-bar .tx-dot.g {
+    background: #27c93f;
+  }
+  .tx-terminal-bar .tx-path {
+    margin-left: auto;
+    font-size: 11px;
+  }
+  .tx-terminal-body {
+    padding: 1.75rem 2rem 2.25rem;
+    font-size: 13px;
+    line-height: 1.7;
+    font-family: var(--font-mono), ui-monospace, monospace;
+  }
+  .tx-term-prompt {
+    color: var(--accent);
+  }
+  .tx-term-out {
+    color: var(--ink-muted);
+  }
+  .tx-term-good {
+    color: var(--accent);
+  }
+  .tx-term-cyan {
+    color: var(--cyan);
+  }
+  .tx-term-faded {
+    color: var(--ink-faint);
+  }
+  .tx-cursor {
+    display: inline-block;
+    width: 8px;
+    height: 14px;
+    background: var(--accent);
+    vertical-align: text-bottom;
+    margin-left: 4px;
+    animation: tx-blink 1s steps(2, end) infinite;
+  }
+  @keyframes tx-blink {
+    50% {
+      opacity: 0.2;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tx-cursor {
+      animation: none;
+      opacity: 1;
+    }
   }
 }

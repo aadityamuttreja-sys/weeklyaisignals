@@ -28,15 +28,24 @@ export default {
           DEFAULT: "var(--accent)",
           deep: "var(--accent-deep)",
         },
+        magenta: "var(--magenta)",
+        cyan: "var(--cyan)",
+        warn: "var(--warn)",
       },
       fontFamily: {
-        serif: ["var(--font-serif)", "Newsreader", "Source Serif 4", "Iowan Old Style", "Georgia", "serif"],
-        sans: ["var(--font-sans)", "Geist", "Inter", "ui-sans-serif", "system-ui", "sans-serif"],
-        mono: ["var(--font-mono)", "JetBrains Mono", "Geist Mono", "ui-monospace", "SF Mono", "Menlo", "monospace"],
+        serif: [
+          "var(--font-serif)",
+          "Instrument Serif",
+          "Iowan Old Style",
+          "Georgia",
+          "serif",
+        ],
+        sans: ["var(--font-mono)", "IBM Plex Mono", "ui-monospace", "monospace"],
+        mono: ["var(--font-mono)", "IBM Plex Mono", "ui-monospace", "monospace"],
       },
       maxWidth: {
         measure: "38rem",
-        "measure-wide": "64rem",
+        "measure-wide": "42.5rem",
       },
       fontSize: {
         display: ["clamp(2.4rem, 4.6vw, 3.6rem)", { lineHeight: "1.05", letterSpacing: "-0.018em" }],
